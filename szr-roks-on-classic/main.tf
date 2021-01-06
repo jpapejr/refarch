@@ -39,6 +39,5 @@ resource "ibm_container_cluster" "cluster" {
   public_vlan_id       = ibm_network_vlan.public_vlan.id
   private_vlan_id      = ibm_network_vlan.private_vlan.id
   force_delete_storage = true
-  wait_till            = "OneWorkerNodeReady"
 
 }
