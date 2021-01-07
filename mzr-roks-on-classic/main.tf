@@ -78,7 +78,7 @@ resource "ibm_container_worker_pool" "pool2" {
   size_per_zone    = var.worker_count
   hardware         = "shared"
   disk_encryption  = "true"
-  resource_group.  = data.ibm_resource_group.resource_group
+  resource_group   = data.ibm_resource_group.resource_group
   
 }
 resource "ibm_container_worker_pool_zone_attachment" "pool2_za" {
@@ -103,7 +103,7 @@ resource "ibm_container_worker_pool" "pool3" {
   size_per_zone    = var.worker_count
   hardware         = "shared"
   disk_encryption  = "true"
-  resource_group.  = data.ibm_resource_group.resource_group
+  resource_group   = data.ibm_resource_group.resource_group
   
 }
 resource "ibm_container_worker_pool_zone_attachment" "pool3_za" {
