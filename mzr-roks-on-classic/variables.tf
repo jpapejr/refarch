@@ -19,10 +19,6 @@ variable "worker_count"{
     default = "3"
 }
 
-variable "zone" {
-  default = ""
-}
-
 variable "resource_group" {
   default = "default"
 }
