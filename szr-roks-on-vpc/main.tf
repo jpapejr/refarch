@@ -83,15 +83,16 @@ data "ibm_resource_group" "resource_group" {
 }
 
 resource "ibm_container_vpc_cluster" "cluster" {
-  name              = "${var.cluster_name}-${random_id.name1.hex}"
-  vpc_id            = ibm_is_vpc.vpc1.id
-  kube_version      = var.cluster_kube_version
-  flavor            = var.cluster_node_flavor
-  worker_count      = var.worker_count
-  resource_group_id = data.ibm_resource_group.resource_group.id
-  entitlement       = var.entitlement
-  cos_instance_crn  = ibm_resource_instance.cos_instance.id
-  wait_till         = "OneWorkerNodeReady"
+  name                 = "${var.cluster_name}-${random_id.name1.hex}"
+  vpc_id               = ibm_is_vpc.vpc1.id
+  kube_version         = var.cluster_kube_version
+  flavor               = var.cluster_node_flavor
+  worker_count         = var.worker_count
+  resource_group_id    = data.ibm_resource_group.resource_group.id
+  entitlement          = var.entitlement
+  cos_instance_crn     = ibm_resource_instance.cos_instance.id
+  force_delete_storage = true
+  wait_till            = "OneWorkerNodeReady"
 
   zones {
     subnet_id = ibm_is_subnet.subnet1.id
