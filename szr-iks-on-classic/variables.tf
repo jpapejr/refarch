@@ -34,11 +34,6 @@ variable "cluster_name" {
   default = "cluster-roks-on-classic"
 }
 
-
-variable "entitlement"{
-  default = ""
-}
-
 //Variable required for content catalog to select terraform version
 variable "TF_VERSION" {
   type = string
