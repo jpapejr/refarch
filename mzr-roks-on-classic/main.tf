@@ -87,6 +87,7 @@ resource "ibm_container_worker_pool_zone_attachment" "pool2_za" {
   zone            = "wdc06"
   private_vlan_id = ibm_network_vlan.private_vlan2.id
   public_vlan_id  = ibm_network_vlan.public_vlan2.id
+  wait_till_albs  = false
 
   //User can increase timeouts
   timeouts {
@@ -112,7 +113,8 @@ resource "ibm_container_worker_pool_zone_attachment" "pool3_za" {
   zone            = "wdc07"
   private_vlan_id = ibm_network_vlan.private_vlan3.id
   public_vlan_id  = ibm_network_vlan.public_vlan3.id
-
+  wait_till_albs  = false
+  
   //User can increase timeouts
   timeouts {
       create = "90m"
