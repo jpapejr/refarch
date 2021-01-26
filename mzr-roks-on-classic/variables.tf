@@ -2,6 +2,10 @@ variable "sl_api_key" {
     default = "" 
 }
 
+variable "ibmcloud_api_key" {
+    default = ""
+}
+
 variable "sl_user" {
     default = ""
 }
