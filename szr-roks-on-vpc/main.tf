@@ -123,7 +123,7 @@ resource "ibm_is_instance" "bastion_host" {
 
   vpc  = ibm_is_vpc.testacc_vpc1.id
   zone = "us-east-1"
-  keys = [ibm_is_ssh_key.key.id]
+  keys = [data.ibm_is_ssh_key.key.id]
 
  //User can configure timeouts
   timeouts {
@@ -132,7 +132,7 @@ resource "ibm_is_instance" "bastion_host" {
     delete = "15m"
   }
 
-  depends_on = [ibm_is_ssh_key.key, ibm_is_subnet.subnet1]
+  depends_on = [data.ibm_is_ssh_key.key, ibm_is_subnet.subnet1]
 }
 
 resource "ibm_is_floating_ip" "fip" {
