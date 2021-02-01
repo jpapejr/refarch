@@ -123,7 +123,7 @@ resource "ibm_is_instance" "bastion_host" {
 
   vpc  = ibm_is_vpc.testacc_vpc1.id
   zone = "us-east-1"
-  keys = [data.ibm_is_ssh_key.key.id]
+  keys = [ibm_is_ssh_key.key.id]
 
  //User can configure timeouts
   timeouts {
