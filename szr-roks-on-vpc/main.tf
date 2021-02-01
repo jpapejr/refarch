@@ -113,7 +113,7 @@ resource "ibm_is_instance" "bastion_host" {
   profile = "bx2-2x8"
 
   primary_network_interface {
-    subnet = ibm_is_subnet.testacc_subnet.id
+    subnet = ibm_is_subnet.subnet1.id
   }
 
   network_interfaces {
@@ -121,7 +121,7 @@ resource "ibm_is_instance" "bastion_host" {
     subnet = ibm_is_subnet.subnet1.id
   }
 
-  vpc  = ibm_is_vpc.testacc_vpc1.id
+  vpc  = ibm_is_vpc.vpc1.id
   zone = "us-east-1"
   keys = [data.ibm_is_ssh_key.key.id]
 
