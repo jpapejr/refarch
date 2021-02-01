@@ -122,6 +122,30 @@ resource "ibm_is_instance" "bastion_host" {
   depends_on = [data.ibm_is_ssh_key.key, ibm_is_subnet.subnet1]
 }
 
+resource "ibm_is_instance" "bastion_host2" {
+  name    = "bastion-host-2"
+  image   = "r014-b7da49af-b46a-4099-99a4-c183d2d40ea8"  //ubuntu 20.04
+  profile = "bx2-2x8"
+
+  primary_network_interface {
+    subnet = ibm_is_subnet.subnet1.id
+  }
+
+
+  vpc  = ibm_is_vpc.vpc1.id
+  zone = "us-east-1"
+  keys = [data.ibm_is_ssh_key.key.id]
+
+ //User can configure timeouts
+  timeouts {
+    create = "15m"
+    update = "15m"
+    delete = "15m"
+  }
+
+  depends_on = [data.ibm_is_ssh_key.key, ibm_is_subnet.subnet1]
+}
+
 resource "ibm_is_floating_ip" "fip" {
   name       = "bastion-fip"
   target     = ibm_is_instance.bastion_host.primary_network_interface.0.id
