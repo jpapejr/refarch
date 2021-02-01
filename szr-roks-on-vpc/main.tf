@@ -36,6 +36,15 @@ resource "ibm_is_security_group_rule" "testacc_security_group_rule_tcp" {
     }
  }
 
+resource "ibm_is_security_group_rule" "testacc_security_group_rule_ssh" {
+    group = ibm_is_vpc.vpc1.default_security_group
+    direction = "inbound"
+    tcp {
+        port_min = 22
+        port_max = 22
+    }
+ }
+
 resource "ibm_is_subnet" "subnet1" {
   name                     = "subnet-${random_id.name1.hex}"
   vpc                      = ibm_is_vpc.vpc1.id
