@@ -45,7 +45,7 @@ resource "ibm_is_security_group_rule" "testacc_security_group_rule_ssh" {
     }
  }
 
-resource "ibm_is_security_group_rule" "testacc_security_group_rule_ssh" {
+resource "ibm_is_security_group_rule" "testacc_security_group_rule_squid" {
     group = ibm_is_vpc.vpc1.default_security_group
     direction = "inbound"
     tcp {
