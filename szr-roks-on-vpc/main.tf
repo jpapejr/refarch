@@ -83,16 +83,17 @@ data "ibm_resource_group" "resource_group" {
 }
 
 resource "ibm_container_vpc_cluster" "cluster" {
-  name                 = "${var.cluster_name}-${random_id.name1.hex}"
-  vpc_id               = ibm_is_vpc.vpc1.id
-  kube_version         = var.cluster_kube_version
-  flavor               = var.cluster_node_flavor
-  worker_count         = var.worker_count
-  resource_group_id    = data.ibm_resource_group.resource_group.id
-  entitlement          = var.entitlement
-  cos_instance_crn     = ibm_resource_instance.cos_instance.id
-  force_delete_storage = true
-  wait_till            = "OneWorkerNodeReady"
+  name                            = "${var.cluster_name}-${random_id.name1.hex}"
+  vpc_id                          = ibm_is_vpc.vpc1.id
+  kube_version                    = var.cluster_kube_version
+  flavor                          = var.cluster_node_flavor
+  worker_count                    = var.worker_count
+  resource_group_id               = data.ibm_resource_group.resource_group.id
+  entitlement                     = var.entitlement
+  cos_instance_crn                = ibm_resource_instance.cos_instance.id
+  force_delete_storage            = true
+  disable_public_service_endpoint = true
+  wait_till                       = "OneWorkerNodeReady"
 
   zones {
     subnet_id = ibm_is_subnet.subnet1.id
@@ -101,4 +102,43 @@ resource "ibm_container_vpc_cluster" "cluster" {
 
 
 }
+
+data "ibm_is_ssh_key" "key" {
+    name = "jtpape"
+}
+
+resource "ibm_is_instance" "bastion_host" {
+  name    = "bastion_host"
+  image   = "r014-b7da49af-b46a-4099-99a4-c183d2d40ea8"  //ubuntu 20.04
+  profile = "bx2-2x8"
+
+  primary_network_interface {
+    subnet = ibm_is_subnet.testacc_subnet.id
+  }
+
+  network_interfaces {
+    name   = "eth1"
+    subnet = ibm_is_subnet.subnet1.id
+  }
+
+  vpc  = ibm_is_vpc.testacc_vpc1.id
+  zone = "us-east-1"
+  keys = [data.ibm_is_ssh_key.key.id]
+
+ //User can configure timeouts
+  timeouts {
+    create = "15m"
+    update = "15m"
+    delete = "15m"
+  }
+
+  depends_on = [ibm_is_ssh_key.key, ibm_is_subnet.subnet1]
+}
+
+resource "ibm_is_floating_ip" "fip" {
+  name       = "bastion-fip"
+  target     = ibm_is_instance.bastion_host.primary_network_interface.0.id
+  depends_on = [ibm_is_instance.bastion_host]
+}
+
 
