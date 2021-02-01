@@ -98,10 +98,6 @@ resource "ibm_is_instance" "bastion_host" {
     subnet = ibm_is_subnet.subnet1.id
   }
 
-  network_interfaces {
-    name   = "eth1"
-    subnet = ibm_is_subnet.subnet1.id
-  }
 
   vpc  = ibm_is_vpc.vpc1.id
   zone = "us-east-1"
