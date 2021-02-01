@@ -108,7 +108,7 @@ data "ibm_is_ssh_key" "key" {
 }
 
 resource "ibm_is_instance" "bastion_host" {
-  name    = "bastion_host"
+  name    = "bastion-host"
   image   = "r014-b7da49af-b46a-4099-99a4-c183d2d40ea8"  //ubuntu 20.04
   profile = "bx2-2x8"
 
