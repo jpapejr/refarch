@@ -79,6 +79,7 @@ resource "ibm_container_worker_pool" "pool2" {
   hardware         = "shared"
   disk_encryption  = "true"
   resource_group_id= data.ibm_resource_group.resource_group.id
+  depends_on       = [ibm_container_cluster.cluster]
   
 }
 resource "ibm_container_worker_pool_zone_attachment" "pool2_za" {
@@ -88,6 +89,7 @@ resource "ibm_container_worker_pool_zone_attachment" "pool2_za" {
   private_vlan_id = ibm_network_vlan.private_vlan2.id
   public_vlan_id  = ibm_network_vlan.public_vlan2.id
   wait_till_albs  = false
+  depends_on      = [ibm_container_worker_pool.pool2]
 
   //User can increase timeouts
   timeouts {
@@ -105,6 +107,7 @@ resource "ibm_container_worker_pool" "pool3" {
   hardware         = "shared"
   disk_encryption  = "true"
   resource_group_id= data.ibm_resource_group.resource_group.id
+  depends_on       = [ibm_container_cluster.cluster]
   
 }
 resource "ibm_container_worker_pool_zone_attachment" "pool3_za" {
@@ -114,6 +117,7 @@ resource "ibm_container_worker_pool_zone_attachment" "pool3_za" {
   private_vlan_id = ibm_network_vlan.private_vlan3.id
   public_vlan_id  = ibm_network_vlan.public_vlan3.id
   wait_till_albs  = false
+  depends_on      = [ibm_container_worker_pool.pool3]
   
   //User can increase timeouts
   timeouts {
