@@ -15,7 +15,7 @@ variable "cluster_node_flavor" {
 }
 
 variable "cluster_kube_version" {
-    default = "4.5_openshift"
+    default = "1.19"
 }
 
 variable "worker_count"{
@@ -31,12 +31,12 @@ variable "resource_group" {
 }
 
 variable "cluster_name" {
-  default = "cluster-roks-on-classic"
+  default = "szr-cluster-iks-on-classic"
 }
 
 //Variable required for content catalog to select terraform version
 variable "TF_VERSION" {
   type = string
   description = "The version of terraform that should be used"
-  default = "0.12"
+  default = "0.13"
 }
