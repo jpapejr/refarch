@@ -6,9 +6,9 @@ resource "ibm_resource_instance" "cos_instance" {
   name              = var.cos_service_name
   service           = "cloud-object-storage"
   plan              = var.cos_service_plan
-  resource_group_id = ibm_resource_group.resource_group.id
+  resource_group_id = data.ibm_resource_group.resource_group.id
   location          = "global"
-  depends_on        = [ibm_resource_group.resource_group]
+  depends_on        = [data.ibm_resource_group.resource_group]
 }
 
 resource "random_id" "name1" {
