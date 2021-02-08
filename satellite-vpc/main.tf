@@ -113,7 +113,7 @@ resource "ibm_is_instance" "bastion_host" {
 
 
   vpc  = ibm_is_vpc.vpc1.id
-  zone = "us-east-1"
+  zone = local.ZONE1
   keys = [data.ibm_is_ssh_key.key.id]
 
  //User can configure timeouts
@@ -130,4 +130,83 @@ resource "ibm_is_floating_ip" "fip" {
   name       = "bastion-fip"
   target     = ibm_is_instance.bastion_host.primary_network_interface.0.id
   depends_on = [ibm_is_instance.bastion_host]
+}
+
+
+resource "ibm_is_instance" "sat-host-cp-1" {
+  name    = "sat-host-cp-1"
+  image   = "r014-931515d2-fcc3-11e9-896d-3baa2797200f"  //rhel7
+  profile = "bx2-4x16"
+  
+  user_data = var.satellite_script
+
+  primary_network_interface {
+    subnet = ibm_is_subnet.subnet1.id
+  }
+
+
+  vpc  = ibm_is_vpc.vpc1.id
+  zone = local.ZONE1
+  keys = [data.ibm_is_ssh_key.key.id]
+
+ //User can configure timeouts
+  timeouts {
+    create = "15m"
+    update = "15m"
+    delete = "15m"
+  }
+
+  depends_on = [data.ibm_is_ssh_key.key, ibm_is_subnet.subnet1]
+}
+
+resource "ibm_is_instance" "sat-host-cp-2" {
+  name    = "sat-host-cp-2"
+  image   = "r014-931515d2-fcc3-11e9-896d-3baa2797200f"  //rhel7
+  profile = "bx2-4x16"
+
+  user_data = var.satellite_script
+
+  primary_network_interface {
+    subnet = ibm_is_subnet.subnet1.id
+  }
+
+
+  vpc  = ibm_is_vpc.vpc1.id
+  zone = local.ZONE2
+  keys = [data.ibm_is_ssh_key.key.id]
+
+ //User can configure timeouts
+  timeouts {
+    create = "15m"
+    update = "15m"
+    delete = "15m"
+  }
+
+  depends_on = [data.ibm_is_ssh_key.key, ibm_is_subnet.subnet2]
+}
+
+resource "ibm_is_instance" "sat-host-cp-3" {
+  name    = "sat-host-cp-3"
+  image   = "r014-931515d2-fcc3-11e9-896d-3baa2797200f"  //rhel7
+  profile = "bx2-4x16"
+
+  user_data = var.satellite_script
+
+  primary_network_interface {
+    subnet = ibm_is_subnet.subnet1.id
+  }
+
+
+  vpc  = ibm_is_vpc.vpc1.id
+  zone = local.ZONE3
+  keys = [data.ibm_is_ssh_key.key.id]
+
+ //User can configure timeouts
+  timeouts {
+    create = "15m"
+    update = "15m"
+    delete = "15m"
+  }
+
+  depends_on = [data.ibm_is_ssh_key.key, ibm_is_subnet.subnet3]
 }

@@ -9,3 +9,7 @@ variable "region" {
 variable "resource_group" {
   default = "default"
 }
+
+variable "satellite_script" {
+  default = ""
+}
