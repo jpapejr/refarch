@@ -51,7 +51,7 @@ resource "ibm_is_public_gateway" "testacc_gateway3" {
 resource "ibm_is_security_group_rule" "testacc_security_group_rule_members" {
     group = ibm_is_vpc.vpc1.default_security_group
     direction = "inbound"
-    remote = ibm_is_vpc.vpc1.default_security_group.id
+    remote = ibm_is_vpc.vpc1.default_security_group
  }
 
 resource "ibm_is_security_group_rule" "testacc_security_group_rule_tcp" {
