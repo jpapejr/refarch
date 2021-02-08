@@ -2,6 +2,10 @@ output "vpc" {
   value = ibm_is_vpc.vpc1.name
 }
 
+output "bastion_fip" {
+  value = ibm_is_floating_ip.fip.address
+}
+
 output "cp-1" {
   value = ibm_is_instance.sat-host-cp-1.primary_network_interface[0].primary_ipv4_address
 }
