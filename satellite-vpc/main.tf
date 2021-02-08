@@ -164,7 +164,7 @@ resource "ibm_is_instance" "sat-host-cp-2" {
 
 
   primary_network_interface {
-    subnet = ibm_is_subnet.subnet1.id
+    subnet = ibm_is_subnet.subnet2.id
   }
 
   vpc  = ibm_is_vpc.vpc1.id
@@ -187,7 +187,7 @@ resource "ibm_is_instance" "sat-host-cp-3" {
   profile = "bx2-4x16"
 
   primary_network_interface {
-    subnet = ibm_is_subnet.subnet1.id
+    subnet = ibm_is_subnet3.subnet1.id
   }
 
 
@@ -235,7 +235,7 @@ resource "ibm_is_instance" "sat-host-cl-2" {
   profile = "bx2-4x16"
 
   primary_network_interface {
-    subnet = ibm_is_subnet.subnet1.id
+    subnet = ibm_is_subnet2.subnet1.id
   }
 
 
@@ -259,7 +259,7 @@ resource "ibm_is_instance" "sat-host-cl-3" {
   profile = "bx2-4x16"
 
   primary_network_interface {
-    subnet = ibm_is_subnet.subnet1.id
+    subnet = ibm_is_subnet.subnet3.id
   }
 
 
