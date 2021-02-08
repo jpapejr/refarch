@@ -84,6 +84,16 @@ resource "ibm_is_security_group_rule" "testacc_security_group_rule_tcp" {
     }
  }
 
+  resource "ibm_is_security_group_rule" "testacc_security_group_rule_squid" {
+    group = ibm_is_vpc.vpc1.default_security_group
+    direction = "inbound"
+    tcp {
+        port_min = 3128
+        port_max = 3128
+    }
+ }
+
+
 
 
 resource "ibm_is_subnet" "subnet1" {
