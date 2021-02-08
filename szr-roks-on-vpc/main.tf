@@ -1,8 +1,14 @@
+data "ibm_resource_group" "resource_group" {
+  name = var.resource_group
+}
+
 resource "ibm_resource_instance" "cos_instance" {
-  name     = var.cos_service_name
-  service  = "cloud-object-storage"
-  plan     = var.cos_service_plan
-  location = "global"
+  name              = var.cos_service_name
+  service           = "cloud-object-storage"
+  plan              = var.cos_service_plan
+  resource_group_id = ibm_resource_group.resource_group.id
+  location          = "global"
+  depends_on        = [ibm_resource_group.resource_group]
 }
 
 resource "random_id" "name1" {
@@ -78,10 +84,6 @@ resource "ibm_is_subnet" "subnet3" {
   public_gateway = ibm_is_public_gateway.testacc_gateway3.id
 }
 
-data "ibm_resource_group" "resource_group" {
-  name = var.resource_group
-}
-
 resource "ibm_container_vpc_cluster" "cluster" {
   name                 = "${var.cluster_name}-${random_id.name1.hex}"
   vpc_id               = ibm_is_vpc.vpc1.id
@@ -93,6 +95,7 @@ resource "ibm_container_vpc_cluster" "cluster" {
   cos_instance_crn     = ibm_resource_instance.cos_instance.id
   force_delete_storage = true
   wait_till            = "OneWorkerNodeReady"
+  depends_on         = [ibm_is_subnet.subnet1]
 
   zones {
     subnet_id = ibm_is_subnet.subnet1.id
