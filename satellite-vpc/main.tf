@@ -22,6 +22,10 @@ data "ibm_resource_group" "resource_group" {
   name = var.resource_group
 }
 
+data "ibm_is_ssh_key" "key" {
+    name = "jtpape"
+}
+
 resource "ibm_is_vpc" "vpc1" {
   name = "vpc-${random_id.name1.hex}"
 }
