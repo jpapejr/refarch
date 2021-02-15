@@ -1,0 +1,91 @@
+{
+  "name": "szr-iks-on-vpc",
+  "type": [
+    "terraform_v0.13"
+  ],
+  "location": "us-south",
+  "description": "SZR IKS cluster on VPC provider",
+  "tags": [],
+  "template_repo": {
+    "url": "https://github.com/jpapejr/refarch",
+    "branch": "main"
+  },
+  "template_data": [
+    {
+      "folder": "szr-iks-on-vpc",
+      "type": "terraform_v0.13",
+      "env_values":[
+      {
+        "VAR1":"<val1>"
+      },
+      {
+        "VAR2":"<val2>"
+      }
+      ],
+      "variablestore": [
+        {
+          "name": "ibmcloud_api_key",
+          "value": "<APIKEY>",
+          "type": "string",
+          "secure": true
+        },
+        {
+          "name": "cluster_node_flavor",
+          "value": "bx2.4x16",
+          "type": "string",
+          "secure": false
+        },
+        {
+            "name": "cluster_kube_version",
+            "value": "1.19",
+            "type": "string",
+            "secure": false
+        },
+        {
+            "name": "worker_count",
+            "value": "3",
+            "type": "string",
+            "secure": false
+        },
+        {
+            "name": "region",
+            "value": "us-east",
+            "type": "string",
+            "secure": false
+        },
+        {
+            "name": "resource_group",
+            "value": "<RESOURCE GROUP>",
+            "type": "string",
+            "secure": false
+        },
+        {
+            "name": "classic_access",
+            "value": "false",
+            "type": "string",
+            "secure": false
+        },
+        {
+            "name": "pod_subnet",
+            "value": "172.30.0.0/16",
+            "type": "string",
+            "secure": false
+        },
+        {
+            "name": "service_subnet",
+            "value": "172.21.0.0/16",
+            "type": "string",
+            "secure": false
+        },
+        {
+            "name": "token",
+            "value": "<SOMEVALUE>",
+            "type": "string",
+            "secure": false
+        }
+      ]
+    }
+  ],
+  "githubtoken": "<github_personal_access_token>"
+}
+
