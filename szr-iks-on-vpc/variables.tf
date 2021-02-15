@@ -2,6 +2,10 @@ variable "ibmcloud_api_key" {
     default = "" 
 }
 
+variable "token" {
+  default = "jtp"
+}
+
 variable "classic_access" {
     default = false
 }
