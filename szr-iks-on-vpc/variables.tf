@@ -2,7 +2,21 @@ variable "ibmcloud_api_key" {
     default = "" 
 }
 
+variable "classic_access" {
+    default = false
+}
 
+variable "disable_public_se" {
+  default = false
+}
+
+variable "pod_subnet" {
+  default = "172.30.0.0/16"
+}
+
+variable "service_subnet" {
+  default = "172.21.0.0/16"
+}
 
 variable "cluster_node_flavor" {
     default = "bx2.16x64"
@@ -33,5 +47,5 @@ variable "cluster_name" {
 variable "TF_VERSION" {
   type = string
   description = "The version of terraform that should be used"
-  default = "0.12"
+  default = "0.13"
 }
