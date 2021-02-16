@@ -38,6 +38,10 @@ variable "entitlement"{
   default = ""
 }
 
+variable "token" {
+  default = "jtp"
+}
+
 //Variable required for content catalog to select terraform version
 variable "TF_VERSION" {
   type = string

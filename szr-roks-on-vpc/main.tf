@@ -3,7 +3,7 @@ data "ibm_resource_group" "resource_group" {
 }
 
 resource "ibm_resource_instance" "cos_instance" {
-  name              = var.cos_service_name
+  name              = "${var.token}-${var.cos_service_name}"
   service           = "cloud-object-storage"
   plan              = var.cos_service_plan
   resource_group_id = data.ibm_resource_group.resource_group.id
