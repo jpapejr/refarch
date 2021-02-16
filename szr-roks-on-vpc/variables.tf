@@ -42,6 +42,22 @@ variable "token" {
   default = "jtp"
 }
 
+variable "pod_subnet" {
+  default = "172.30.0.0/16"
+}
+
+variable "service_subnet" {
+  default = "172.21.0.0/16"
+}
+
+variable "classic_access" {
+    default = false
+}
+
+variable "disable_public_se" {
+  default = false
+}
+
 //Variable required for content catalog to select terraform version
 variable "TF_VERSION" {
   type = string
