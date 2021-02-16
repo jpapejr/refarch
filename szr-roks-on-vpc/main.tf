@@ -31,6 +31,8 @@ locals {
 
 resource "ibm_is_vpc" "vpc1" {
   name = "vpc-${random_id.name1.hex}"
+  resource_group = data.ibm_resource_group.resource_group.id
+  classic_access = var.classic_access
 }
 
 resource "ibm_is_public_gateway" "testacc_gateway1" {
