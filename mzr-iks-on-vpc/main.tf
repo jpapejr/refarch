@@ -52,7 +52,8 @@ resource "ibm_is_subnet" "subnet1" {
   vpc                      = ibm_is_vpc.vpc1.id
   zone                     = local.ZONE1
   total_ipv4_address_count = 256
-  public_gateway = ibm_is_public_gateway.testacc_gateway1.id
+  resource_group           = data.ibm_resource_group.resource_group.id
+  public_gateway           = ibm_is_public_gateway.testacc_gateway1.id
 }
 
 resource "ibm_is_subnet" "subnet2" {
@@ -60,7 +61,8 @@ resource "ibm_is_subnet" "subnet2" {
   vpc                      = ibm_is_vpc.vpc1.id
   zone                     = local.ZONE2
   total_ipv4_address_count = 256
-  public_gateway = ibm_is_public_gateway.testacc_gateway2.id
+  resource_group           = data.ibm_resource_group.resource_group.id
+  public_gateway           = ibm_is_public_gateway.testacc_gateway2.id
 }
 
 resource "ibm_is_subnet" "subnet3" {
@@ -68,7 +70,8 @@ resource "ibm_is_subnet" "subnet3" {
   vpc                      = ibm_is_vpc.vpc1.id
   zone                     = local.ZONE3
   total_ipv4_address_count = 256
-  public_gateway = ibm_is_public_gateway.testacc_gateway3.id
+  resource_group           = data.ibm_resource_group.resource_group.id
+  public_gateway           = ibm_is_public_gateway.testacc_gateway3.id
 }
 
 data "ibm_resource_group" "resource_group" {
