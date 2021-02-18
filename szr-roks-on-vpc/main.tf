@@ -53,15 +53,6 @@ resource "ibm_is_public_gateway" "testacc_gateway3" {
     zone = local.ZONE3
 }
 
-resource "ibm_is_security_group_rule" "testacc_security_group_rule_tcp" {
-    group = ibm_is_vpc.vpc1.default_security_group
-    direction = "inbound"
-    tcp {
-        port_min = 30000
-        port_max = 32767
-    }
- }
-
 resource "ibm_is_subnet" "subnet1" {
   name                     = "subnet-${random_id.name1.hex}"
   vpc                      = ibm_is_vpc.vpc1.id
