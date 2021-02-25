@@ -1,10 +1,10 @@
 {
-  "name": "mzr-iks-on-vpc",
+  "name": "mzr-iks-on-vpc-scalingtest",
   "type": [
     "terraform_v0.13"
   ],
   "location": "us-south",
-  "description": "MZR IKS cluster on VPC provider",
+  "description": "MZR IKS Cluster setup with 3 pools of different sizes for testing pool resizing with various worker flavors",
   "tags": [],
   "template_repo": {
     "url": "https://github.com/jpapejr/refarch",
@@ -28,12 +28,6 @@
           "value": "<APIKEY>",
           "type": "string",
           "secure": true
-        },
-        {
-          "name": "cluster_node_flavor",
-          "value": "bx2.4x16",
-          "type": "string",
-          "secure": false
         },
         {
             "name": "cluster_kube_version",

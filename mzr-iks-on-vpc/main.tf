@@ -76,7 +76,7 @@ resource "ibm_container_vpc_cluster" "cluster" {
   name              = "${var.token}-${var.cluster_name}-${random_id.name1.hex}"
   vpc_id            = ibm_is_vpc.vpc1.id
   kube_version      = var.cluster_kube_version
-  flavor            = var.cluster_node_flavor
+  flavor            = "mx2.16x128"
   worker_count      = var.worker_count
   resource_group_id = data.ibm_resource_group.resource_group.id
   disable_public_service_endpoint = var.disable_public_se
@@ -90,32 +90,62 @@ resource "ibm_container_vpc_cluster" "cluster" {
     name      = local.ZONE1
   }
 
+  zones {
+    subnet_id = ibm_is_subnet.subnet2.id
+    name      = local.ZONE2
+  }
+
+  zones {
+    subnet_id = ibm_is_subnet.subnet3.id
+    name      = local.ZONE3
+  }
+
 
 }
 
 resource "ibm_container_vpc_worker_pool" "cluster_pool2" {
   cluster           = ibm_container_vpc_cluster.cluster.id
   worker_pool_name  = "default2"
-  flavor            = var.cluster_node_flavor
+  flavor            = "bx2.32x128"
   vpc_id            = ibm_is_vpc.vpc1.id
   worker_count      = var.worker_count
   resource_group_id = data.ibm_resource_group.resource_group.id
   zones {
-    name      = local.ZONE2
+    subnet_id = ibm_is_subnet.subnet1.id
+    name      = local.ZONE1
+  }
+
+  zones {
     subnet_id = ibm_is_subnet.subnet2.id
+    name      = local.ZONE2
+  }
+
+  zones {
+    subnet_id = ibm_is_subnet.subnet3.id
+    name      = local.ZONE3
   }
 }
 
 resource "ibm_container_vpc_worker_pool" "cluster_pool3" {
   cluster           = ibm_container_vpc_cluster.cluster.id
   worker_pool_name  = "default3"
-  flavor            = var.cluster_node_flavor
+  flavor            = "mx2.32x256"
   vpc_id            = ibm_is_vpc.vpc1.id
   worker_count      = var.worker_count
   resource_group_id = data.ibm_resource_group.resource_group.id
   zones {
-    name      = local.ZONE3
+    subnet_id = ibm_is_subnet.subnet1.id
+    name      = local.ZONE1
+  }
+
+  zones {
+    subnet_id = ibm_is_subnet.subnet2.id
+    name      = local.ZONE2
+  }
+
+  zones {
     subnet_id = ibm_is_subnet.subnet3.id
+    name      = local.ZONE3
   }
 }
 
