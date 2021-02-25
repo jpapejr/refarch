@@ -8,7 +8,7 @@
   "tags": [],
   "template_repo": {
     "url": "https://github.com/jpapejr/refarch",
-    "branch": "main"
+    "branch": "cluster-scaling-test"
   },
   "template_data": [
     {
