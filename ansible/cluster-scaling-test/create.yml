@@ -1,5 +1,5 @@
 ---
-- name: Setup US-East VPC and Cluster
+- name: Setup VPC and Cluster
   hosts: localhost
   collections:
   - ibm.cloudcollection
