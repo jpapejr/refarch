@@ -1,0 +1,11 @@
+---
+ibmcloud_api_key: ""
+region: ""
+rgid: ""
+prefix: ""
+entitlement: ""
+cos_crn: ""
+pod_subnet: ""
+service_subnet: ""
+disable_public_se: ""
+kube_version: ""

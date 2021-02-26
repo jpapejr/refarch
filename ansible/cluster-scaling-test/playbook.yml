@@ -1,0 +1,270 @@
+---
+- name: Setup US-East VPC and Cluster
+  hosts: localhost
+  collections:
+  - ibm.cloudcollection
+  tasks:
+    - name: Fetch the variables from var file
+      include_vars:
+        file: vars.yml
+
+    - name: Configure VPC
+      ibm_is_vpc:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+        resource_group: "{{ rgid }}"
+        name: "{{ prefix }}-vpc"
+        state: available
+        id: "{{ vpc.id | default(omit) }}"
+      register: vpc_create_output
+      when: vpc is not defined
+    
+    - name: Save VPC as fact
+      set_fact: 
+        cacheable: True
+        vpc: "{{ vpc_create_output.resource }}"
+      when: vpc is not defined
+    
+    - name: Configure VPC Subnet 1
+      ibm_is_subnet: 
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+        resource_group: "{{ rgid }}"
+        name: "{{ prefix }}-subnet1"
+        state: available
+        id: "{{ subnet1.id | default(omit) }}"
+        vpc: "{{ vpc.id }}"
+        total_ipv4_address_count: 256
+        zone: "{{ region }}-1"
+      register: subnet1_create_output
+      when: subnet1 is not defined
+
+    - name: Save Subnet1 as a fact
+      set_fact:
+        cacheable: True
+        subnet1: "{{ subnet1_create_output.resource }}"
+      when: subnet1 is not defined
+
+    - name: Create PGW1
+      ibm_is_public_gateway:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        zone: "{{ region }}-1"
+        name: "{{ prefix }}-subnet1-pgw"
+        resource_group: "{{ rgid }}"
+        vpc: "{{ vpc.id }}"
+        id: "{{ pgw1.id | default(omit) }}"
+        state: available
+        region: "{{ region }}"
+      register: pgw1_create_output
+      when: pgw1 is not defined
+
+
+    - name: Save PGW1 as a fact
+      set_fact:
+        cacheable: True
+        pgw1: "{{ pgw1_create_output.resource }}"
+      when: pgw1 is not defined
+
+
+
+    - name: Configure VPC Subnet 2
+      ibm_is_subnet: 
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+        resource_group: "{{ rgid }}"
+        name: "{{ prefix }}-subnet2"
+        state: available
+        id: "{{ subnet2.id | default(omit) }}"
+        vpc: "{{ vpc.id }}"
+        total_ipv4_address_count: 256
+        zone: "{{ region }}-2"
+      register: subnet2_create_output
+      when: subnet2 is not defined
+
+    - name: Save Subnet2 as a fact
+      set_fact:
+        cacheable: True
+        subnet2: "{{ subnet2_create_output.resource }}"
+      when: subnet2 is not defined
+
+    - name: Create PGW2
+      ibm_is_public_gateway:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        zone: "{{ region }}-2"
+        name: "{{ prefix }}-subnet2-pgw"
+        resource_group: "{{ rgid }}"
+        vpc: "{{ vpc.id }}"
+        id: "{{ pgw2.id | default(omit) }}"
+        state: available
+        region: "{{ region }}"
+      register: pgw2_create_output
+      when: pgw2 is not defined
+
+    - name: Save PGW2 as a fact
+      set_fact:
+        cacheable: True
+        pgw2: "{{ pgw2_create_output.resource }}"
+      when: pgw2 is not defined
+    
+    - name: Configure VPC Subnet 3
+      ibm_is_subnet: 
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+        resource_group: "{{ rgid }}"
+        name: "{{ prefix }}-subnet3"
+        state: available
+        id: "{{ subnet3.id | default(omit) }}"
+        vpc: "{{ vpc.id }}"
+        total_ipv4_address_count: 256
+        zone: "{{ region }}-3"
+      register: subnet3_create_output
+      when: subnet3 is not defined
+
+    - name: Save Subnet3 as a fact
+      set_fact:
+        cacheable: True
+        subnet3: "{{ subnet3_create_output.resource }}"
+      when: subnet3 is not defined
+
+    - name: Create PGW3
+      ibm_is_public_gateway:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        zone: "{{ region }}-3"
+        name: "{{ prefix }}-subnet3-pgw"
+        resource_group: "{{ rgid }}"
+        vpc: "{{ vpc.id }}"
+        id: "{{ pgw3.id | default(omit) }}"
+        state: available
+        region: "{{ region }}"
+      register: pgw3_create_output
+      when: pgw3 is not defined
+
+    - name: Save PGW3 as a fact
+      set_fact:
+        cacheable: True
+        pgw3: "{{ pgw3_create_output.resource }}"
+      when: pgw3 is not defined
+
+    - name: Create Cluster
+      ibm_container_vpc_cluster:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        worker_count: 1
+        wait_till: "OneWorkerNodeReady"
+        name: "{{ prefix }}-cluster"
+        entitlement: "{{ entitlement }}"
+        cos_instance_crn: "{{ cos_crn }}"
+        kube_version: "{{ kube_version }}"
+        pod_subnet: "{{ pod_subnet }}"
+        service_subnet: "{{ service_subnet }}"
+        resource_group_id: "{{ rgid }}"
+        force_delete_storage: True
+        disable_public_service_endpoint: "{{ disable_public_se }}"
+        zones:
+          - subnet_id: "{{ subnet1.id }}"
+            name: "{{ region }}-1"
+        state: available
+        id: "{{ cluster.id | default(omit) }}"
+        vpc_id: "{{ vpc.id }}"
+        flavor: "bx2.4x16"
+      register: cluster_create_output
+      when: cluster is not defined
+
+    - name: Save Cluster as a fact
+      set_fact:
+        cacheable: True
+        cluster: "{{ cluster_create_output.resource }}"
+      when: cluster is not defined
+ 
+
+    - name: Create Small Pool 
+      ibm_container_vpc_worker_pool:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        cluster: "{{ cluster.id }}"
+        zones:
+          - subnet_id: "{{ subnet1.id }}"
+            name: "{{ region }}-1"
+          - subnet_id: "{{ subnet2.id }}"
+            name: "{{ region }}-2"
+          - subnet_id: "{{ subnet3.id }}"
+            name: "{{ region }}-3"
+        vpc_id: "{{ vpc.id }}"
+        flavor: "mx2.16x128"
+        worker_pool_name: "{{ prefix }}-smaller"
+        resource_group_id: "{{ rgid }}"
+        worker_count: 1
+        entitlement: "{{ entitlement }}"
+        id: "{{ smallpool.id | default(omit) }}"
+        state: available
+      register: smallpool_create_output
+      when: smallpool is not defined
+      
+
+
+    - name: Save Small Pool as a fact
+      set_fact: 
+        cacheable: True
+        smallpool: "{{ smallpool_create_output.resource }}"
+      when: smallpool is not defined
+     
+
+    - name: Create Medium Pool 
+      ibm_container_vpc_worker_pool:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        cluster: "{{ cluster.id }}"
+        zones:
+          - subnet_id: "{{ subnet1.id }}"
+            name: "{{ region }}-1"
+          - subnet_id: "{{ subnet2.id }}"
+            name: "{{ region }}-2"
+          - subnet_id: "{{ subnet3.id }}"
+            name: "{{ region }}-3"
+        vpc_id: "{{ vpc.id }}"
+        flavor: "bx2.32x128"
+        worker_pool_name: "{{ prefix }}-medium"
+        resource_group_id: "{{ rgid }}"
+        worker_count: 1
+        entitlement: "{{ entitlement }}"
+        id: "{{ mediumpool.id | default(omit) }}"
+        state: available
+      register: mediumpool_create_output
+      when: mediumpool is not defined
+      
+
+    - name: Save Medium Pool as a fact
+      set_fact: 
+        cacheable: True
+        mediumpool: "{{ mediumpool_create_output.resource }}"
+      when: mediumpool is not defined
+     
+
+    - name: Create Large Pool 
+      ibm_container_vpc_worker_pool:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        cluster: "{{ cluster.id }}"
+        zones:
+          - subnet_id: "{{ subnet1.id }}"
+            name: "{{ region }}-1"
+          - subnet_id: "{{ subnet2.id }}"
+            name: "{{ region }}-2"
+          - subnet_id: "{{ subnet3.id }}"
+            name: "{{ region }}-3"
+        vpc_id: "{{ vpc.id }}"
+        flavor: "mx2.32x256"
+        worker_pool_name: "{{ prefix }}-large"
+        resource_group_id: "{{ rgid }}"
+        worker_count: 1
+        entitlement: "{{ entitlement }}"
+        id: "{{ largepool.id | default(omit) }}"
+        state: available
+      register: largepool_create_output
+      when: largepool is not defined
+    
+
+    - name: Save Large Pool as a fact
+      set_fact: 
+        cacheable: True
+        largepool: "{{ largepool_create_output.resource }}"
+      when: largepool is not defined
+   
+
+
