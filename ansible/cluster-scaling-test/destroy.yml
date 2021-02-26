@@ -1,0 +1,218 @@
+---
+- name: Tear Down VPC and Cluster
+  hosts: localhost
+  collections:
+  - ibm.cloudcollection
+  tasks:
+    - name: Fetch the variables from var file
+      include_vars:
+        file: vars.yml
+    
+    - name: Destroy Large Pool 
+      ibm_container_vpc_worker_pool:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        cluster: "{{ cluster.id }}"
+        zones:
+          - subnet_id: "{{ subnet1.id }}"
+            name: "{{ region }}-1"
+          - subnet_id: "{{ subnet2.id }}"
+            name: "{{ region }}-2"
+          - subnet_id: "{{ subnet3.id }}"
+            name: "{{ region }}-3"
+        vpc_id: "{{ vpc.id }}"
+        flavor: "mx2.32x256"
+        worker_pool_name: "{{ prefix }}-large"
+        resource_group_id: "{{ rgid }}"
+        worker_count: 1
+        entitlement: "{{ entitlement }}"
+        id: "{{ largepool.id | default(omit) }}"
+        state: absent
+      register: largepool_delete_output
+      when: largepool is defined
+    
+    - name: Destroy Medium Pool 
+      ibm_container_vpc_worker_pool:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        cluster: "{{ cluster.id }}"
+        zones:
+          - subnet_id: "{{ subnet1.id }}"
+            name: "{{ region }}-1"
+          - subnet_id: "{{ subnet2.id }}"
+            name: "{{ region }}-2"
+          - subnet_id: "{{ subnet3.id }}"
+            name: "{{ region }}-3"
+        vpc_id: "{{ vpc.id }}"
+        flavor: "bx2.32x128"
+        worker_pool_name: "{{ prefix }}-medium"
+        resource_group_id: "{{ rgid }}"
+        worker_count: 1
+        entitlement: "{{ entitlement }}"
+        id: "{{ mediumpool.id | default(omit) }}"
+        state: absent
+      register: mediumpool_create_output
+      when: mediumpool is defined
+
+    - name: Destroy Small Pool 
+      ibm_container_vpc_worker_pool:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        cluster: "{{ cluster.id }}"
+        zones:
+          - subnet_id: "{{ subnet1.id }}"
+            name: "{{ region }}-1"
+          - subnet_id: "{{ subnet2.id }}"
+            name: "{{ region }}-2"
+          - subnet_id: "{{ subnet3.id }}"
+            name: "{{ region }}-3"
+        vpc_id: "{{ vpc.id }}"
+        flavor: "mx2.16x128"
+        worker_pool_name: "{{ prefix }}-smaller"
+        resource_group_id: "{{ rgid }}"
+        worker_count: 1
+        entitlement: "{{ entitlement }}"
+        id: "{{ smallpool.id | default(omit) }}"
+        state: absent
+      register: smallpool_create_output
+      when: smallpool is defined
+
+    - name: Destroy Cluster
+      ibm_container_vpc_cluster:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        worker_count: 1
+        wait_till: "OneWorkerNodeReady"
+        name: "{{ prefix }}-cluster"
+        entitlement: "{{ entitlement }}"
+        cos_instance_crn: "{{ cos_crn }}"
+        kube_version: "{{ kube_version }}"
+        pod_subnet: "{{ pod_subnet }}"
+        service_subnet: "{{ service_subnet }}"
+        resource_group_id: "{{ rgid }}"
+        force_delete_storage: True
+        disable_public_service_endpoint: "{{ disable_public_se }}"
+        zones:
+          - subnet_id: "{{ subnet1.id }}"
+            name: "{{ region }}-1"
+        state: absent
+        id: "{{ cluster.id | default(omit) }}"
+        vpc_id: "{{ vpc.id }}"
+        flavor: "bx2.4x16"
+      register: cluster_create_output
+      when: cluster is defined
+
+    - name: Destroy PGW3
+      ibm_is_public_gateway:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        zone: "{{ region }}-3"
+        name: "{{ prefix }}-subnet3-pgw"
+        resource_group: "{{ rgid }}"
+        vpc: "{{ vpc.id }}"
+        id: "{{ pgw3.id | default(omit) }}"
+        state: absent
+        region: "{{ region }}"
+      register: pgw3_create_output
+      when: pgw3 is defined
+
+    - name: Destroy PGW2
+      ibm_is_public_gateway:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        zone: "{{ region }}-2"
+        name: "{{ prefix }}-subnet2-pgw"
+        resource_group: "{{ rgid }}"
+        vpc: "{{ vpc.id }}"
+        id: "{{ pgw2.id | default(omit) }}"
+        state: absent
+        region: "{{ region }}"
+      register: pgw2_create_output
+      when: pgw2 is defined
+
+    - name: Destroy PGW1
+      ibm_is_public_gateway:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        zone: "{{ region }}-1"
+        name: "{{ prefix }}-subnet1-pgw"
+        resource_group: "{{ rgid }}"
+        vpc: "{{ vpc.id }}"
+        id: "{{ pgw1.id | default(omit) }}"
+        state: absent
+        region: "{{ region }}"
+      register: pgw1_create_output
+      when: pgw1 is defined
+
+    - name: Destroy VPC Subnet 3
+      ibm_is_subnet: 
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+        resource_group: "{{ rgid }}"
+        name: "{{ prefix }}-subnet3"
+        state: absent
+        id: "{{ subnet3.id | default(omit) }}"
+        vpc: "{{ vpc.id }}"
+        total_ipv4_address_count: 256
+        zone: "{{ region }}-3"
+      register: subnet3_create_output
+      when: subnet3 is defined
+
+    - name: Destroy VPC Subnet 2
+      ibm_is_subnet: 
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+        resource_group: "{{ rgid }}"
+        name: "{{ prefix }}-subnet2"
+        state: absent
+        id: "{{ subnet2.id | default(omit) }}"
+        vpc: "{{ vpc.id }}"
+        total_ipv4_address_count: 256
+        zone: "{{ region }}-2"
+      register: subnet2_create_output
+      when: subnet2 is defined 
+
+    - name: Destroy VPC Subnet 1
+      ibm_is_subnet: 
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+        resource_group: "{{ rgid }}"
+        name: "{{ prefix }}-subnet1"
+        state: absent
+        id: "{{ subnet1.id | default(omit) }}"
+        vpc: "{{ vpc.id }}"
+        total_ipv4_address_count: 256
+        zone: "{{ region }}-1"
+      register: subnet1_create_output
+      when: subnet1 is defined   
+
+    - name: Destroy VPC
+      ibm_is_vpc:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+        resource_group: "{{ rgid }}"
+        name: "{{ prefix }}-vpc"
+        state: absent
+        id: "{{ vpc.id | default(omit) }}"
+      register: vpc_create_output
+      when: vpc is defined
+  
+
+
+    
+
+
+    
+
+
+    
+
+    
+
+ 
+   
+
+
+ 
+
+    
+      
+
+
+    
+   
+
+
