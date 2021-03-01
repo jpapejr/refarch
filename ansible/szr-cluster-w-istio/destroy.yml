@@ -41,7 +41,7 @@
         region: "{{ region }}"
         datacenter: "{{ zone1 }}"
         router_hostname: "bcr01a.{{ zone1 }}"
-        type: "private"
+        type: "PRIVATE"
         name: "{{ prefix }}-private"
         state: absent
         id: "{{ privatevlan.id | default(omit) }}"
@@ -58,7 +58,7 @@
         region: "{{ region }}"
         datacenter: "{{ zone1 }}"
         router_hostname: "fcr01a.{{ zone1 }}"
-        type: "public"
+        type: "PUBLIC"
         name: "{{ prefix }}-public"
         state: absent
         id: "{{ publicvlan.id | default(omit) }}"
