@@ -26,7 +26,7 @@
         service_subnet: "{{ service_subnet }}"
         public_service_endpoint: "{{ enable_public_se }}"
         private_service_endpoint: "{{ enable_private_se }}"
-        datacenter: "{{ zone }}"
+        datacenter: "{{ zone1 }}"
         state: absent
         id: "{{ cluster.id | default(omit) }}"
         machine_type: "bx2.4x16"
