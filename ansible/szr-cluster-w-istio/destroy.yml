@@ -10,13 +10,12 @@
 
     
     - name: Destroy Cluster
-      ibm_container_vpc_cluster:
+      ibm_container_cluster:
         ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         default_pool_size: 3
         wait_till: "OneWorkerNodeReady"
         name: "{{ prefix }}-cluster"
         entitlement: "{{ entitlement }}"
-        cos_instance_crn: "{{ cos_crn }}"
         kube_version: "{{ kube_version }}"
         public_vlan_id: "{{ publicvlan.id }}"
         private_vlan_id: "{{ privatevlan.id }}"
