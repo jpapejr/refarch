@@ -1,0 +1,100 @@
+---
+- name: Setup Cluster with IBM Cloud Managed Istio
+  hosts: localhost
+  collections:
+  - ibm.cloudcollection
+  tasks:
+    - name: Fetch the variables from var file
+      include_vars:
+        file: vars.yml
+
+    - name: Classic private VLAN
+      ibm_network_vlan:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        iaas_classic_username: "{{ sl_username }}"
+        iaas_classic_api_key: "{{ sl_key }}"
+        region: "{{ region }}"
+        datacenter: "{{ zone1 }}"
+        router_hostname: "bcr01a.{{ zone1 }}"
+        type: "PRIVATE"
+        name: "{{ prefix }}-private"
+        state: available
+        id: "{{ privatevlan.id | default(omit) }}"
+      register: private_vlan_create_output
+      when: privatevlan is not defined
+    
+    - name: Save private VLAN as fact
+      set_fact: 
+        cacheable: True
+        privatevlan: "{{ private_vlan_create_output.resource }}"
+      when: privatevlan is not defined
+    
+    - name: Create public VLAN
+      ibm_network_vlan:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        iaas_classic_username: "{{ sl_username }}"
+        iaas_classic_api_key: "{{ sl_key }}"
+        region: "{{ region }}"
+        datacenter: "{{ zone1 }}"
+        router_hostname: "fcr01a.{{ zone1 }}"
+        type: "PUBLIC"
+        name: "{{ prefix }}-public"
+        state: available
+        id: "{{ publicvlan.id | default(omit) }}"
+      register: public_vlan_create_output
+      when: publicvlan is not defined
+    
+    - name: Save public VLAN as fact
+      set_fact: 
+        cacheable: True
+        publicvlan: "{{ public_vlan_create_output.resource }}"
+      when: publicvlan is not defined
+
+    - name: Create Cluster
+      ibm_container_cluster:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        default_pool_size: 3
+        wait_till: "OneWorkerNodeReady"
+        name: "{{ prefix }}-cluster"
+        entitlement: "{{ entitlement }}"
+        kube_version: "{{ kube_version }}"
+        public_vlan_id: "{{ publicvlan.id }}"
+        private_vlan_id: "{{ privatevlan.id }}"
+        resource_group_id: "{{ rgid }}"
+        force_delete_storage: True
+        pod_subnet: "{{ pod_subnet }}"
+        service_subnet: "{{ service_subnet }}"
+        public_service_endpoint: "{{ enable_public_se }}"
+        private_service_endpoint: "{{ enable_private_se }}"
+        datacenter: "{{ zone1 }}"
+        state: available
+        id: "{{ cluster.id | default(omit) }}"
+        machine_type: "b3c.4x16"
+        gateway_enabled: "{{ gateway_enabled }}"
+        hardware: "shared"
+      register: cluster_create_output
+      when: cluster is not defined
+
+    - name: Save Cluster as a fact
+      set_fact:
+        cacheable: True
+        cluster: "{{ cluster_create_output.resource }}"
+      when: cluster is not defined
+ 
+    - name: Install Managed Istio add-on
+      ibm_container_addons:
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        addons: 
+          - name: "istio"
+            version: "{{ istio_version }}"
+        cluster: "{{ cluster.id }}"
+        resource_group_id: "{{ rgid }}"
+        id: "{{ istio.id | default(omit) }}"
+      
+      register: istio_addon_output
+
+    - name: Save Istio addon as a fact
+      set_fact:
+        cacheable: True
+        istio: "{{ istio_addon_output.resource }}"
+      when: istio is not defined
