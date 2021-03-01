@@ -32,7 +32,7 @@
         machine_type: "bx2.4x16"
         gateway_enabled: "{{ gateway_enabled }}"
       register: cluster_create_output
-      when: cluster is not defined
+      when: cluster is defined
 
     - name: Destroy private VLAN
       ibm_network_vlan:
@@ -47,7 +47,7 @@
         state: absent
         id: "{{ privatevlan.id | default(omit) }}"
       register: private_vlan_create_output
-      when: privatevlan is not defined
+      when: privatevlan is defined
     
 
     
@@ -64,6 +64,6 @@
         state: absent
         id: "{{ publicvlan.id | default(omit) }}"
       register: public_vlan_create_output
-      when: publicvlan is not defined
+      when: publicvlan is defined
   
     
