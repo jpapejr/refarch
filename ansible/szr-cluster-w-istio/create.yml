@@ -90,6 +90,7 @@
         cluster: "{{ cluster.id }}"
         resource_group_id: "{{ rgid }}"
         id: "{{ istio.id | default(omit) }}"
+      tags: istio
       
       register: istio_addon_output
 
@@ -98,3 +99,4 @@
         cacheable: True
         istio: "{{ istio_addon_output.resource }}"
       when: istio is not defined
+      tags: istio
