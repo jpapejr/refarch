@@ -275,7 +275,7 @@
         resource_group: "{{ rgid }}"
         ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         primary_network_interface:
-        - subnets: "{{ subnet1.id }}"
+        - subnet: "{{ subnet1.id }}"
         name: "{{ prefix }}-testdriver"
         vpc: "{{ vpc.id }}"
         zone: "{{ region }}-1"
