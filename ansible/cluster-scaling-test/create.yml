@@ -271,7 +271,7 @@
         keys:
         - "{{ sshkey1_id }}"
         - "{{ sshkey2_id }}"
-        image: "ibm-centos-8-2-minimal-amd64-2"
+        image: "r006-a20a0f5d-6649-4117-80d5-f96c2f3f6b3d"
         resource_group: "{{ rgid }}"
         ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         primary_network_interface:
