@@ -271,7 +271,7 @@
         keys:
         - "{{ sshkey1_id }}"
         - "{{ sshkey2_id }}"
-        image:
+        image: "ibm-centos-8-2-minimal-amd64-2"
         resource_group: "{{ rgid }}"
         ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         primary_network_interface:
@@ -283,7 +283,7 @@
         wait_before_delete: True
         id: "{{ driver.id | default(omit) }}"
         region: "{{ region }}"
-      state: available
+        state: available
       register: driver_create_output
       when: driver is not defined
 
