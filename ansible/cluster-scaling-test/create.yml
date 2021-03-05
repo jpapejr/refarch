@@ -293,5 +293,21 @@
         driver: "{{ driver_create_output.resource }}"
       when: driver is not defined
    
+    - name: Create VSI floating-ip
+      ibm_is_floating_ip:
+        resource_group: "{{ rgid }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        name: "{{ prefix }}-driver-ip"
+        target: "{{ driver.primary_network_interface[0].id }}"
+        id: "{{ driverip.id | default(omit) }}"
+        state: available
+        region: "{{ region }}"
+      register: driverip_create_output
+      when: driverip is not defined
 
+    - name: Save VSI floating-ip as a fact
+      set_fact:
+        cacheable: True
+        driverip: "{{ driverip_create_output.resource }}"
+      when: driverip is not defined
 
