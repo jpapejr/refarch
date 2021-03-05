@@ -7,6 +7,27 @@
     - name: Fetch the variables from var file
       include_vars:
         file: vars.yml
+
+    - name: Destroy test driver VSI
+      ibm_is_instance:
+        keys:
+        - "{{ sshkey1_id }}"
+        - "{{ sshkey2_id }}"
+        image:
+        resource_group: "{{ rgid }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        primary_network_interface:
+        - subnets: "{{ subnet1.id }}"
+        name: "{{ prefix }}-testdriver"
+        vpc: "{{ vpc.id }}"
+        zone: "{{ region }}-1"
+        profile: "cx2-2x4"
+        wait_before_delete: True
+        id: "{{ driver.id | default(omit) }}"
+        region: "{{ region }}"
+      state: absent
+      register: driver_delete_output
+      when: driver is defined
     
     - name: Destroy Large Pool 
       ibm_container_vpc_worker_pool:
