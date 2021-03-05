@@ -265,6 +265,33 @@
         cacheable: True
         largepool: "{{ largepool_create_output.resource }}"
       when: largepool is not defined
+
+    - name: Create test driver VSI
+      ibm_is_instance:
+        keys:
+        - "{{ sshkey1_id }}"
+        - "{{ sshkey2_id }}"
+        image:
+        resource_group: "{{ rgid }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        primary_network_interface:
+        - subnets: "{{ subnet1.id }}"
+        name: "{{ prefix }}-testdriver"
+        vpc: "{{ vpc.id }}"
+        zone: "{{ region }}-1"
+        profile: "cx2-2x4"
+        wait_before_delete: True
+        id: "{{ driver.id | default(omit) }}"
+        region: "{{ region }}"
+      state: available
+      register: driver_create_output
+      when: driver is not defined
+
+    - name: Save test driver VSI as a fact
+      set_fact:
+        cacheable: True
+        driver: "{{ driver_create_output.resource }}"
+      when: driver is not defined
    
 
 
