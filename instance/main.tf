@@ -19,7 +19,7 @@ resource ibm_is_instance instance {
     subnet = var.subnet_id
   }
 
-  vpc  = data.ibm_is_vpc.vpc1
+  vpc  = data.ibm_is_vpc.vpc1.id
   zone = var.zone
   keys = [data.ibm_is_ssh_key.key.id]
 
