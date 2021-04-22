@@ -11,9 +11,10 @@ data ibm_is_vpc vpc1 {
 }
 
 resource ibm_is_instance instance {
-  name    = var.instance_name
-  image   = "r014-b7da49af-b46a-4099-99a4-c183d2d40ea8"
-  profile = var.profile
+  name           = var.instance_name
+  image          = "r014-b7da49af-b46a-4099-99a4-c183d2d40ea8"
+  profile        = var.profile
+  resource_group = data.ibm_resource_group.resource_group
 
   primary_network_interface {
     subnet = var.subnet_id
@@ -33,7 +34,8 @@ resource ibm_is_instance instance {
 }
 
 resource ibm_is_floating_ip fip {
-  name       = "${var.instance_name}-fip"
-  target     = ibm_is_instance.instance.primary_network_interface.0.id
-  depends_on = [ibm_is_instance.instance]
+  name           = "${var.instance_name}-fip"
+  target         = ibm_is_instance.instance.primary_network_interface.0.id
+  resource_group = data.ibm_resource_group.resource_group
+  depends_on     = [ibm_is_instance.instance]
 }
